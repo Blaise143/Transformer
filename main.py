@@ -20,7 +20,6 @@ def set_seed(num: int) -> None:
     random.seed(num)
 
 
-set_seed(42)
 
 
 class SelfAttention(nn.Module):

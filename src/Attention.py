@@ -21,6 +21,9 @@ def set_seed(num: int) -> None:
     random.seed(num)
 
 
+set_seed(0)
+
+
 class SelfAttention(nn.Module):
     """
     An implementation of self attention in pytorch

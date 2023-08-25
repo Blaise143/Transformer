@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 import numpy as np
-from torchsummary import summary
 from typing import List
 import random
 from torch.nn.init import xavier_uniform_
@@ -10,7 +9,8 @@ from torch.nn.init import xavier_uniform_
 
 def set_seed(num: int) -> None:
     """
-    Sets a whole bunch of seeds for reproducibility
+    Sets a whole bunch of seeds for reproducibility. 
+    Will remove the method after testing if the implementation is bug free.
 
     Args:
         num (int): The seed to be set
@@ -53,10 +53,6 @@ class SelfAttention(nn.Module):
         Q = self.Q(X)
         K = self.K(X)
         V = self.V(X)
-
-        # multihead_attn = nn.MultiheadAttention(self.dim, num_heads=8, bias=False)
-        # z = multi_head()
-        # attn_output, attn_output_weights = multihead_attn(Q, K, V)
 
         scores = torch.matmul(Q, K.T)
         scores_normalized = scores / np.sqrt(self.dim)
@@ -102,5 +98,6 @@ class MultiHeadedAttention(nn.Module):
 if __name__ == "__main__":
     random_tensor = torch.tensor(
         [[1, 1, 1, 1], [1, 1, 1, 1.], [1, 1, 1, 1], [1, 1, 1, 1]])
-    print(random_tensor)
-    print(SelfAttention(4).forward(random_tensor))
+    print(random_tensor.shape)
+    print(MultiHeadedAttention(4)(random_tensor).shape)
+    print(SelfAttention(4).forward(random_tensor).shape)

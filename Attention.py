@@ -9,7 +9,8 @@ from torch.nn.init import xavier_uniform_
 
 
 def set_seed(num: int) -> None:
-    """Sets a whole bunch of seeds for reproducibility
+    """
+    Sets a whole bunch of seeds for reproducibility
 
     Args:
         num (int): The seed to be set
@@ -76,8 +77,16 @@ class MultiHeadedAttention(nn.Module):
         self.dim = dim
         self.num_heads = num_heads
 
-    def forward(self, X):
-        # print(f"Xshape: {X.shape}")
+    def forward(self, X: torch.tensor) -> torch.tensor:
+        """
+        A forward pass through the network
+
+        Args:
+            X (torch.tensor): A tensor to be passed throgh the networkd
+
+        Returns:
+            torch.tensor: A torch tensor after it has passed through the network
+        """
         attentions = list()
         for _ in range(self.num_heads):
             attentions.append(SelfAttention(self.dim)(X))
@@ -85,13 +94,13 @@ class MultiHeadedAttention(nn.Module):
         print(f"Printing out: {out}")
         layer = nn.Linear(out.shape[1], self.dim, bias=False)
         ones = torch.ones(self.dim, out.shape[1])
-        # layer.weight = nn.Parameter(ones)
         print(f"Printing layer {layer}")
         out = layer(out)
         return out
 
 
 if __name__ == "__main__":
-    random_tensor = torch.tensor([[1, 1, 1, 1], [1, 1, 1, 1.], [1, 1, 1, 1], [1, 1, 1, 1]])
+    random_tensor = torch.tensor(
+        [[1, 1, 1, 1], [1, 1, 1, 1.], [1, 1, 1, 1], [1, 1, 1, 1]])
     print(random_tensor)
     print(SelfAttention(4).forward(random_tensor))

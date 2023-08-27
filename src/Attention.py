@@ -3,9 +3,6 @@ import torch.nn as nn
 import pytorch_lightning as pl
 import numpy as np
 from typing import List
-import random
-from torch.nn.init import xavier_uniform_
-import torch.nn.init as init
 
 
 class SelfAttention(nn.Module):
@@ -73,8 +70,8 @@ class MultiHeadedAttention(nn.Module):
         for _ in range(self.num_heads):
             acc.append(SelfAttention(dim=self.dim)(X))
         attentions = torch.cat(acc, -1)
-        W = nn.Linear(
-            in_features=attentions.shape[1], out_features=self.dim)
+        W = nn.Linear(in_features=attentions.shape[1],
+                      out_features=self.dim)
         out = W(attentions)
         return out
 

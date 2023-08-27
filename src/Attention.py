@@ -8,23 +8,6 @@ from torch.nn.init import xavier_uniform_
 import torch.nn.init as init
 
 
-def set_seed(num: int) -> None:
-    """
-    Sets a whole bunch of seeds for reproducibility. 
-    Will remove the method after testing if the implementation is bug free.
-
-    Args:
-        num (int): The seed to be set
-    """
-    torch.manual_seed(num)
-    torch.cuda.manual_seed(num)
-    np.random.seed(num)
-    random.seed(num)
-
-
-set_seed(0)
-
-
 class SelfAttention(nn.Module):
     """
     An implementation of self attention in pytorch
@@ -38,9 +21,9 @@ class SelfAttention(nn.Module):
         """
         super(SelfAttention, self).__init__()
         self.dim = dim
-        self.Q = nn.Linear(dim, dim, bias=False)
-        self.K = nn.Linear(dim, dim, bias=False)
-        self.V = nn.Linear(dim, dim, bias=False)
+        self.Q = nn.Linear(dim, dim)
+        self.K = nn.Linear(dim, dim)
+        self.V = nn.Linear(dim, dim)
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         """The input tensor
@@ -64,6 +47,7 @@ class SelfAttention(nn.Module):
 
 
 class MultiHeadedAttention(nn.Module):
+
     def __init__(self, dim: int, num_heads: int = 8) -> None:
         """Performs a multiheaded attention peration on imput data
 
@@ -89,7 +73,6 @@ class MultiHeadedAttention(nn.Module):
         for _ in range(self.num_heads):
             acc.append(SelfAttention(dim=self.dim)(X))
         attentions = torch.cat(acc, -1)
-        print(f"Attentions:\n{attentions}")
         W = nn.Linear(
             in_features=attentions.shape[1], out_features=self.dim)
         out = W(attentions)
@@ -97,8 +80,6 @@ class MultiHeadedAttention(nn.Module):
 
 
 if __name__ == "__main__":
-    random_tensor = torch.tensor(
-        [[1, 1, 1, 1], [1, 1, 1, 1.], [1, 1, 1, 1], [1, 1, 1, 1]])
-    print(random_tensor)
-    print(SelfAttention(4)(random_tensor))
-    print(MultiHeadedAttention(4)(random_tensor))
+    random_tensor = torch.rand(9, 5)
+    print(SelfAttention(5)(random_tensor))
+    print(MultiHeadedAttention(5)(random_tensor))

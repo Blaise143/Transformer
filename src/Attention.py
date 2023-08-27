@@ -5,6 +5,7 @@ import numpy as np
 from typing import List
 import random
 from torch.nn.init import xavier_uniform_
+import torch.nn.init as init
 
 
 def set_seed(num: int) -> None:
@@ -37,8 +38,6 @@ class SelfAttention(nn.Module):
         """
         super(SelfAttention, self).__init__()
         self.dim = dim
-        ones = torch.ones(dim, dim)
-
         self.Q = nn.Linear(dim, dim, bias=False)
         self.K = nn.Linear(dim, dim, bias=False)
         self.V = nn.Linear(dim, dim, bias=False)
@@ -65,42 +64,41 @@ class SelfAttention(nn.Module):
 
 
 class MultiHeadedAttention(nn.Module):
-    def __init__(self, dim: int, num_heads: int = 8):
-        """An Implementation of Multi headed attention
+    def __init__(self, dim: int, num_heads: int = 8) -> None:
+        """Performs a multiheaded attention peration on imput data
 
         Args:
-            dim (int): The dimention of the embedding
-            num_heads (int, optional): The number of self attention heads. Defaults to 8.
+            dim (int): The dimension of the input vectors
+            num_heads (int, optional): The number of attention heads. Defaults to 8.
         """
         super().__init__()
         self.dim = dim
         self.num_heads = num_heads
 
     def forward(self, X: torch.tensor) -> torch.tensor:
-        """
-        A forward pass through the network
+        """Performs a multiheaded attention operation on input tensor X
 
         Args:
-            X (torch.tensor): A tensor to be passed throgh the networkd
+            X (torch.tensor): The input tensor before a multiheaded attention operation
 
         Returns:
-            torch.tensor: A torch tensor after it has passed through the network
+            torch.tensor: The output tensor after a multiheaded attention operation
         """
-        attentions = list()
+        acc = list()
+
         for _ in range(self.num_heads):
-            attentions.append(SelfAttention(self.dim)(X))
-        out = torch.cat(attentions, -1)
-        print(f"Printing out: {out}")
-        layer = nn.Linear(out.shape[1], self.dim, bias=False)
-        ones = torch.ones(self.dim, out.shape[1])
-        print(f"Printing layer {layer}")
-        out = layer(out)
+            acc.append(SelfAttention(dim=self.dim)(X))
+        attentions = torch.cat(acc, -1)
+        print(f"Attentions:\n{attentions}")
+        W = nn.Linear(
+            in_features=attentions.shape[1], out_features=self.dim)
+        out = W(attentions)
         return out
 
 
 if __name__ == "__main__":
     random_tensor = torch.tensor(
         [[1, 1, 1, 1], [1, 1, 1, 1.], [1, 1, 1, 1], [1, 1, 1, 1]])
-    print(random_tensor.shape)
-    print(MultiHeadedAttention(4)(random_tensor).shape)
-    print(SelfAttention(4).forward(random_tensor).shape)
+    print(random_tensor)
+    print(SelfAttention(4)(random_tensor))
+    print(MultiHeadedAttention(4)(random_tensor))

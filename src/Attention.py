@@ -7,7 +7,7 @@ from typing import List
 
 class SelfAttention(nn.Module):
     """
-    An implementation of self attention in pytorch
+    An implementation of self attention in pytorch 
     """
 
     def __init__(self, dim: int) -> None:

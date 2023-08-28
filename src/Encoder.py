@@ -35,7 +35,30 @@ class EncoderBlock(nn.Module):
         return x
 
 
+class Encoder(nn.Module):
+
+    def __init__(self, dim: int, num_heads: int = 8) -> None:
+        super().__init__()
+        self.dim = dim
+        self.num_heads = num_heads
+
+        self.encoders = nn.Sequential(
+            EncoderBlock(dim=dim, num_heads=num_heads),
+            EncoderBlock(dim=dim, num_heads=num_heads),
+            EncoderBlock(dim=dim, num_heads=num_heads),
+            EncoderBlock(dim=dim, num_heads=num_heads),
+            EncoderBlock(dim=dim, num_heads=num_heads),
+            EncoderBlock(dim=dim, num_heads=num_heads)
+        )
+
+    def forward(self, X):
+        x = self.encoders(X)
+        return x
+
+
 if __name__ == "__main__":
     tensor = torch.rand(9, 5)
     print(EncoderBlock(5)(tensor).shape)
-    print(tensor)
+    print("Full Encoders")
+    print(Encoder(5)(tensor).shape)
+    # print(tensor)

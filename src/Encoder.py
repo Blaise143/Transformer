@@ -30,12 +30,21 @@ class EncoderBlock(nn.Module):
         x = nn.LayerNorm(self.dim)(x)
 
         x_cache = x
-        x = nn.Linear(self.dim, self.dim)(x)
+        fcn = nn.Sequential(
+            nn.Linear(self.dim, self.dim),
+            nn.ReLU(),
+            nn.Linear(self.dim, self.dim),
+            nn.ReLU()
+        )
+        x = fcn(x)
         x = x+x_cache
         return x
 
 
 class Encoder(nn.Module):
+    """
+    stacks identity encoders together. 6 autoencoders are used here as in the original Transformers paper
+    """
 
     def __init__(self, dim: int, num_heads: int = 8) -> None:
         super().__init__()
@@ -51,7 +60,15 @@ class Encoder(nn.Module):
             EncoderBlock(dim=dim, num_heads=num_heads)
         )
 
-    def forward(self, X):
+    def forward(self, X: torch.tensor) -> torch.tensor:
+        """Peforms a forward pass through the network
+
+        Args:
+            X (torch.tensor): Input tensor
+
+        Returns:
+
+        """
         x = self.encoders(X)
         return x
 

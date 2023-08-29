@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 
-class PositionalEncoding():
+class PositionalEncoding:
     def __init__(self, dim: int, max_position: int) -> None:
         """Implements a sinusoidal positional encoding
 

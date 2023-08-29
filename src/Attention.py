@@ -23,7 +23,7 @@ class SelfAttention(nn.Module):
         self.V = nn.Linear(dim, dim)
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
-        """The input tensor
+        """Performs self attention on input tensor X
 
         Args:
             X (tensor): the input
@@ -57,7 +57,7 @@ class MultiHeadedAttention(nn.Module):
         self.num_heads = num_heads
 
     def forward(self, X: torch.tensor) -> torch.tensor:
-        """Performs a multiheaded attention operation on input tensor X
+        """Performs a forward pass throught the network
 
         Args:
             X (torch.tensor): The input tensor before a multiheaded attention operation
@@ -79,4 +79,4 @@ class MultiHeadedAttention(nn.Module):
 if __name__ == "__main__":
     random_tensor = torch.rand(9, 5)
     print(SelfAttention(5)(random_tensor))
-    print(MultiHeadedAttention(5)(random_tensor))
+    print(MultiHeadedAttention(5)(random_tensor).shape)

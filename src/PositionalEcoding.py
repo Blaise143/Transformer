@@ -32,6 +32,6 @@ class PositionalEncoding:
 
 
 if __name__ == "__main__":
-    p_e = PositionalEncoding(2000, 2000)
+    p_e = PositionalEncoding(dim=2000, max_position=2000)
     plt.matshow(p_e.generate())
     plt.show()

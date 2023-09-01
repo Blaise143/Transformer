@@ -3,6 +3,8 @@ import torch.nn as nn
 import pytorch_lightning as pl
 import numpy as np
 from typing import List
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class SelfAttention(nn.Module):
@@ -43,6 +45,29 @@ class SelfAttention(nn.Module):
         return z
 
 
+class MaskedAttention(nn.Module):
+
+    def __init__(self, dim: int) -> None:
+        super().__init__()
+        self.dim = dim
+        self.Q = nn.Linear(dim, dim)
+        self.K = nn.Linear(dim, dim)
+        self.V = nn.Linear(dim, dim)
+
+    def forward(self, X):
+        ones_tril = torch.tril(torch.ones(self.dim, self.dim))
+        print(ones_tril)
+        # X = torch.masked_fill(X, mask=ones_tril == 0, value=float("-inf"))
+        print(X)
+
+        Q = self.Q(X)
+        K = self.K(X)
+        V = self.V(X)
+
+        scores = torch.matmul(Q, K.T)
+        print(scores)
+
+
 class MultiHeadedAttention(nn.Module):
 
     def __init__(self, dim: int, num_heads: int = 8) -> None:
@@ -77,6 +102,7 @@ class MultiHeadedAttention(nn.Module):
 
 
 if __name__ == "__main__":
-    random_tensor = torch.rand(9, 5)
-    print(SelfAttention(5)(random_tensor))
-    print(MultiHeadedAttention(5)(random_tensor).shape)
+    random_tensor = torch.rand(9, 9)
+    print(MaskedAttention(9)(random_tensor))
+    # print(SelfAttention(5)(random_tensor))
+    # print(MultiHeadedAttention(5)(random_tensor).shape)
